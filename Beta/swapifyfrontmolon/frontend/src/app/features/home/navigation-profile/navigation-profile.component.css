@@ -1,0 +1,57 @@
+/* Estilos adicionales para mejorar la integración entre header, contenido y footer */
+
+/* Ajustes para el header */
+nav {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Ajustes para el footer */
+  footer {
+    margin-top: 2rem;
+  }
+  
+  /* Ajustes para las filas y columnas en el footer */
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+  }
+  
+  .col-12 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  
+  @media (min-width: 768px) {
+    .col-md-6 {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+    
+    .mt-md-0 {
+      margin-top: 0 !important;
+    }
+  }
+  
+  /* Ajustes para los botones y enlaces */
+  button:focus, a:focus {
+    outline: none;
+  }
+  
+  /* Ajustes para los inputs en el footer */
+  footer input {
+    outline: none;
+  }
+  
+  footer input:focus {
+    border-color: #fff;
+  }
+  
+  /* Ajustes para el checkbox en el footer */
+  footer input[type="checkbox"] {
+    min-width: 16px;
+    min-height: 16px;
+  }

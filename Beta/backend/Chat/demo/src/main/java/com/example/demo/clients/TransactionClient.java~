@@ -1,0 +1,18 @@
+package com.example.demo.clients;
+
+import com.example.demo.dtos.CreateTransactionDto;
+import com.example.demo.dtos.TransactionDto;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+
+@FeignClient(name = "transaction-service", url = "${transaction.service.url:http://transaction-service:8084}")
+public interface TransactionClient {
+
+    @PostMapping("/transactions")
+    TransactionDto createTransaction(
+            @RequestBody CreateTransactionDto dto,
+            @RequestHeader("Authorization") String authToken
+    );
+}

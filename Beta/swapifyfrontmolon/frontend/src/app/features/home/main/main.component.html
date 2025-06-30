@@ -1,0 +1,526 @@
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-content d-flex align-items-center justify-content-between">
+      <!-- Logo -->
+      <a href="#" class="navbar-logo">
+        <img src="assets/swapify2.PNG" id="logo" alt="Swapify Logo">
+      </a>
+
+      <!-- Buscador -->
+      <div class="search-container d-flex align-items-center">
+        <div class="search-box d-flex align-items-center">
+          <i class="search-icon" (click)="buscarProductos()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+          </i>
+          <input
+            type="text"
+            placeholder="Buscar productos, marcas y mucho más..."
+            [(ngModel)]="searchKeyword"
+            class="search-input"
+            (keyup.enter)="buscarProductos()"
+          />
+        </div>
+
+        <!-- Botón de búsqueda -->
+        <button (click)="buscarProductos()" class="search-button">
+          Buscar
+        </button>
+
+        <button (click)="irACrear()" class="create-product-button">
+          Crear Producto
+        </button>
+      </div>
+
+      <!-- Acciones de usuario -->
+      <div class="user-actions d-flex align-items-center gap-3">
+        <!-- Si no hay usuario -->
+        <div *ngIf="!user" class="auth-buttons d-flex gap-2">
+          <button 
+            (click)="irALogin()" 
+            type="button" 
+            class="login-button">
+            Regístrate o inicia sesión
+          </button>
+        </div>
+
+        <!-- Si hay usuario -->
+        <div *ngIf="user" class="user-menu d-flex align-items-center gap-3">
+          <!-- Créditos -->
+          <span class="credits-badge">
+            Créditos: {{ user.credits }}
+          </span>
+          
+          <!-- Botón de perfil -->
+          <div class="profile-dropdown">
+            <div class="profile-toggle d-flex align-items-center">
+              <img
+                [src]="user.profilePictureUrl || '/placeholder.svg?height=40&width=40'"
+                alt="Imagen de perfil"
+                class="profile-image"
+                (click)="irAProfile()"
+                style="cursor: pointer;"
+              >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                fill="currentColor"
+                [ngClass]="{'rotate-180': isProfileMenuOpen}"
+                viewBox="0 0 16 16"
+                (click)="toggleProfileMenu()"
+                style="cursor: pointer;"
+              >
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+              </svg>
+            </div>
+
+            <!-- Menú desplegable -->
+            <div *ngIf="isProfileMenuOpen" class="dropdown-menu show">
+              <a href="#" (click)="irAProfile(); $event.preventDefault()" class="dropdown-item">Perfil</a>
+              <a href="#" (click)="irAMisChats(); $event.preventDefault()" class="dropdown-item">Mis chats</a>
+              <a href="#" (click)="irAFavoritos(); $event.preventDefault()" class="dropdown-item">Favoritos</a>
+              <div class="dropdown-divider"></div>
+              <a href="#" (click)="logout(); $event.preventDefault()" class="dropdown-item logout-item">Cerrar sesión</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Categorías -->
+<div class="categories-bar">
+  <div class="container">
+    <div class="categories-list">
+      <button class="category-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
+        </svg>
+        Todas las categorías
+      </button>
+      <button (click)="filtrarPorCategoria('Hogar')" class="category-item">Hogar</button>
+      <button (click)="filtrarPorCategoria('Deportes')" class="category-item">Deportes</button>
+      <button (click)="filtrarPorCategoria('Ropa')" class="category-item">Ropa</button>
+      <button (click)="filtrarPorCategoria('Electrónica')" class="category-item">Electrónica</button>
+      <button (click)="irAContacta()" class="category-item">Contáctanos</button>
+      <button (click)="openLocationModal()" class="category-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+        </svg>
+        Ubicación
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de ubicación -->
+<div *ngIf="isLocationModalOpen" class="location-modal-backdrop">
+  <div class="location-modal">
+    <h2 class="modal-title">Seleccionar ubicación</h2>
+    <input
+      id="locationInput"
+      type="text"
+      placeholder="Introduce una ubicación"
+      class="location-input"
+    />
+    <button (click)="centerMapOnLocation()" class="center-map-button">
+      Centrar en ubicación
+    </button>
+    <div id="map" class="location-map"></div>
+    <div class="radius-control">
+      <label for="radiusRange" class="radius-label">Radio (km):</label>
+      <input
+        id="radiusRange"
+        type="range"
+        min="1"
+        max="100"
+        step="1"
+        [(ngModel)]="radius"
+        class="radius-slider"
+        (input)="updateRadius()"
+      />
+      <p class="radius-value">Radio seleccionado: {{ radius }} km</p>
+    </div>
+    <div class="modal-actions">
+      <button (click)="closeLocationModal()" class="cancel-button">Cancelar</button>
+      <button (click)="applyFilterAndSearch()" class="apply-button">Aplicar y Buscar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Contenido principal -->
+<main>
+  <div *ngIf="isLoading" class="loading-spinner">
+    Cargando productos...
+  </div>
+
+  <!-- Hero Section -->
+  <div *ngIf="!search && !searchCategory" class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title">Compra y vende artículos de segunda mano</h1>
+          <p class="hero-subtitle">En Swapify, conectamos personas para dar una nueva vida a los objetos que ya no usan.</p>
+          <button (click)="irACrear()" class="hero-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            Vender ahora
+          </button>
+        </div>
+        <div class="hero-image-container">
+          <img src="/assets/intercambio.png" alt="Intercambio de productos" class="hero-image">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección Vistos Recientemente -->
+  <div *ngIf="!search && !searchCategory && recentlyViewed.length > 0" class="products-section">
+    <div class="container">
+      <h2 class="section-title">Vistos Recientemente</h2>
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let product of recentlyViewed" (click)="goToProductDetail(product.id)">
+          <div class="product-image-container">
+            <img
+              [src]="product.imageUrl?.[0] || '/placeholder.svg?height=200&width=200'"
+              alt="{{ product.title }}"
+              class="product-image"
+            >
+            <!-- FAVORITE BUTTON WALLAPOP -->
+            <button
+              class="favorite-button"
+              (click)="toggleFavorite(product); $event.stopPropagation()"
+              [ngClass]="{'favorited': product.isFavorite}"
+              [disabled]="!user"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="product.isFavorite ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span class="favorite-count">{{ product.favoriteCount || 0 }}</span>
+            </button>
+          </div>
+          <div class="product-info">
+            <p class="product-price">{{ product.price }} swapicoins</p>
+            <h3 class="product-title">{{ product.title }}</h3>
+            <p class="product-description">{{ product.description || 'Sin descripción' }}</p>
+            <button
+              (click)="goToProductDetail(product.id); $event.stopPropagation()"
+              class="view-product-button"
+            >
+              Ver Producto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección Trending -->
+  <div *ngIf="!search && !searchCategory && trendingProducts.length > 0" class="products-section">
+    <div class="container">
+      <h2 class="section-title">Productos en Tendencia</h2>
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let product of trendingProducts" (click)="goToProductDetail(product.id)">
+          <div class="product-image-container">
+            <img
+              [src]="product.imageUrl?.[0] || '/placeholder.svg?height=200&width=200'"
+              alt="{{ product.title }}"
+              class="product-image"
+            >
+            <!-- FAVORITE BUTTON WALLAPOP -->
+            <button
+              class="favorite-button"
+              (click)="toggleFavorite(product); $event.stopPropagation()"
+              [ngClass]="{'favorited': product.isFavorite}"
+              [disabled]="!user"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="product.isFavorite ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span class="favorite-count">{{ product.favoriteCount || 0 }}</span>
+            </button>
+          </div>
+          <div class="product-info">
+            <p class="product-price">{{ product.price }} swapicoins</p>
+            <h3 class="product-title">{{ product.title }}</h3>
+            <p class="product-description">{{ product.description || 'Sin descripción' }}</p>
+            <button
+              (click)="goToProductDetail(product.id); $event.stopPropagation()"
+              class="view-product-button"
+            >
+              Ver Producto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección Más como estos -->
+  <div *ngIf="!search && !searchCategory && similarProducts.length > 0" class="products-section">
+    <div class="container">
+      <h2 class="section-title">Más como estos</h2>
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let product of similarProducts" (click)="goToProductDetail(product.id)">
+          <div class="product-image-container">
+            <img
+              [src]="product.imageUrl?.[0] || '/placeholder.svg?height=200&width=200'"
+              alt="{{ product.title }}"
+              class="product-image"
+            >
+            <!-- FAVORITE BUTTON WALLAPOP -->
+            <button
+              class="favorite-button"
+              (click)="toggleFavorite(product); $event.stopPropagation()"
+              [ngClass]="{'favorited': product.isFavorite}"
+              [disabled]="!user"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="product.isFavorite ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span class="favorite-count">{{ product.favoriteCount || 0 }}</span>
+            </button>
+          </div>
+          <div class="product-info">
+            <p class="product-price">{{ product.price }} swapicoins</p>
+            <h3 class="product-title">{{ product.title }}</h3>
+            <p class="product-description">{{ product.description || 'Sin descripción' }}</p>
+            <button
+              (click)="goToProductDetail(product.id); $event.stopPropagation()"
+              class="view-product-button"
+            >
+              Ver Producto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Productos Disponibles -->
+  <div *ngIf="!search && !searchCategory" class="products-section">
+    <div class="container">
+      <h2 class="section-title">Productos Disponibles</h2>
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let product of products" (click)="goToProductDetail(product.id)">
+          <div class="product-image-container">
+            <img
+              [src]="product.imageUrl?.[0] || '/placeholder.svg?height=200&width=200'"
+              alt="{{ product.title }}"
+              class="product-image"
+            >
+            <!-- FAVORITE BUTTON WALLAPOP -->
+            <button
+              class="favorite-button"
+              (click)="toggleFavorite(product); $event.stopPropagation()"
+              [ngClass]="{'favorited': product.isFavorite}"
+              [disabled]="!user"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="product.isFavorite ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span class="favorite-count">{{ product.favoriteCount || 0 }}</span>
+            </button>
+          </div>
+          <div class="product-info">
+            <p class="product-price">{{ product.price }} swapicoins</p>
+            <h3 class="product-title">{{ product.title }}</h3>
+            <p class="product-description">{{ product.description || 'Sin descripción' }}</p>
+            <button
+              (click)="goToProductDetail(product.id); $event.stopPropagation()"
+              class="view-product-button"
+            >
+              Ver Producto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resultados de Búsqueda -->
+  <div *ngIf="search" class="products-section">
+    <div class="container">
+      <h2 class="section-title">Resultados de la búsqueda</h2>
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let product of products" (click)="goToProductDetail(product.id)">
+          <div class="product-image-container">
+            <img
+              [src]="product.imageUrl?.[0] || '/placeholder.svg?height=200&width=200'"
+              alt="{{ product.title }}"
+              class="product-image"
+            >
+            <!-- FAVORITE BUTTON WALLAPOP -->
+            <button
+              class="favorite-button"
+              (click)="toggleFavorite(product); $event.stopPropagation()"
+              [ngClass]="{'favorited': product.isFavorite}"
+              [disabled]="!user"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="product.isFavorite ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span class="favorite-count">{{ product.favoriteCount || 0 }}</span>
+            </button>
+          </div>
+          <div class="product-info">
+            <p class="product-price">{{ product.price }} swapicoins</p>
+            <h3 class="product-title">{{ product.title }}</h3>
+            <p class="product-description">{{ product.description || 'Sin descripción' }}</p>
+            <button
+              (click)="goToProductDetail(product.id); $event.stopPropagation()"
+              class="view-product-button"
+            >
+              Ver Producto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resultados de Categoría -->
+  <div *ngIf="searchCategory" class="products-section">
+    <div class="container">
+      <h2 class="section-title">Resultados de la categoría</h2>
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let product of products" (click)="goToProductDetail(product.id)">
+          <div class="product-image-container">
+            <img
+              [src]="product.imageUrl?.[0] || '/placeholder.svg?height=200&width=200'"
+              alt="{{ product.title }}"
+              class="product-image"
+            >
+            <!-- FAVORITE BUTTON WALLAPOP -->
+            <button
+              class="favorite-button"
+              (click)="toggleFavorite(product); $event.stopPropagation()"
+              [ngClass]="{'favorited': product.isFavorite}"
+              [disabled]="!user"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="product.isFavorite ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span class="favorite-count">{{ product.favoriteCount || 0 }}</span>
+            </button>
+          </div>
+          <div class="product-info">
+            <p class="product-price">{{ product.price }} swapicoins</p>
+            <h3 class="product-title">{{ product.title }}</h3>
+            <p class="product-description">{{ product.description || 'Sin descripción' }}</p>
+            <button
+              (click)="goToProductDetail(product.id); $event.stopPropagation()"
+              class="view-product-button"
+            >
+              Ver Producto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de categorías destacadas -->
+  <div *ngIf="!search && !searchCategory" class="categories-section">
+    <div class="container">
+      <h2 class="section-title">Renueva tu rutina</h2>
+      <div class="categories-grid">
+        <div class="category-card" (click)="filtrarPorCategoria('Deportes')">
+          <img src="/placeholder.svg?height=180&width=180" alt="Cinta de correr" class="category-image">
+          <div class="category-info">
+            <h3 class="category-title">Cinta de correr</h3>
+            <p class="category-count">11.568 anuncios</p>
+          </div>
+        </div>
+        <div class="category-card" (click)="filtrarPorCategoria('Deportes')">
+          <img src="/placeholder.svg?height=180&width=180" alt="Bicicleta estática" class="category-image">
+          <div class="category-info">
+            <h3 class="category-title">Bicicleta estática</h3>
+            <p class="category-count">26.812 anuncios</p>
+          </div>
+        </div>
+        <div class="category-card" (click)="filtrarPorCategoria('Deportes')">
+          <img src="/placeholder.svg?height=180&width=180" alt="Elíptica" class="category-image">
+          <div class="category-info">
+            <h3 class="category-title">Elíptica</h3>
+            <p class="category-count">16.015 anuncios</p>
+          </div>
+        </div>
+        <div class="category-card" (click)="filtrarPorCategoria('Deportes')">
+          <img src="/placeholder.svg?height=180&width=180" alt="Mancuernas" class="category-image">
+          <div class="category-info">
+            <h3 class="category-title">Mancuernas</h3>
+            <p class="category-count">9.115 anuncios</p>
+          </div>
+        </div>
+        <div class="category-card" (click)="filtrarPorCategoria('Deportes')">
+          <img src="/placeholder.svg?height=180&width=180" alt="Pesas" class="category-image">
+          <div class="category-info">
+            <h3 class="category-title">Pesas</h3>
+            <p class="category-count">49.258 anuncios</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-column">
+        <h3 class="footer-title">Swapify</h3>
+        <ul class="footer-links">
+          <li><a href="#" class="footer-link">Quiénes somos</a></li>
+          <li><a href="#" class="footer-link">Cómo funciona</a></li>
+          <li><a href="#" class="footer-link">Seguridad</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3 class="footer-title">Soporte</h3>
+        <ul class="footer-links">
+          <li><a href="#" class="footer-link">Centro de ayuda</a></li>
+          <li><a href="#" class="footer-link">Contacto</a></li>
+          <li><a href="#" class="footer-link">Reglas de publicación</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3 class="footer-title">Legal</h3>
+        <ul class="footer-links">
+          <li><a href="#" class="footer-link">Condiciones de uso</a></li>
+          <li><a href="#" class="footer-link">Política de privacidad</a></li>
+          <li><a href="#" class="footer-link">Cookies</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3 class="footer-title">Síguenos</h3>
+        <div class="social-links">
+          <a href="#" class="social-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="copyright">© 2025 Swapify. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>

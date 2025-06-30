@@ -1,0 +1,245 @@
+/* Variables de colores */
+:root {
+  --wallapop-primary: #13c1ac;
+  --wallapop-primary-dark: #0fa697;
+  --wallapop-primary-light: #e8f8f7;
+  --wallapop-secondary: #ff6b35;
+  --wallapop-gray: #f5f5f5;
+  --wallapop-dark: #333333;
+  --wallapop-text: #484848;
+  --wallapop-light-text: #767676;
+  --wallapop-border: #e0e0e0;
+  --wallapop-white: #ffffff;
+  --wallapop-success: #28a745;
+  --wallapop-danger: #e53935;
+}
+
+/* Fondo y contenedor principal */
+.create-product-container {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border-radius: 24px;
+  padding: 40px 32px;
+  max-width: 600px;
+  margin: 40px auto;
+  border: 2px solid var(--wallapop-primary-light);
+}
+
+/* Título principal */
+.create-product-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--wallapop-dark);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Subtítulos de sección */
+.create-product-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--wallapop-primary-dark);
+  margin-bottom: 18px;
+  margin-top: 18px;
+  text-align: left;
+}
+
+/* Campos del formulario */
+.create-product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.create-product-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Etiquetas */
+.create-product-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--wallapop-dark);
+  margin-bottom: 4px;
+}
+
+/* Inputs, selects y textarea */
+.create-product-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid var(--wallapop-border);
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  color: var(--wallapop-text);
+  resize: none;
+}
+
+.create-product-input:focus {
+  border-color: var(--wallapop-primary);
+  box-shadow: 0 0 0 4px rgba(19, 193, 172, 0.1);
+}
+
+/* Ayuda y mensajes */
+.create-product-helper {
+  font-size: 13px;
+  color: var(--wallapop-light-text);
+  margin-top: 2px;
+}
+
+/* Vista previa de imágenes */
+.create-product-image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.create-product-image-preview {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--wallapop-primary-light);
+  background: var(--wallapop-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.create-product-remove-image {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--wallapop-danger);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 2;
+}
+.create-product-remove-image:hover {
+  background: #b71c1c;
+}
+
+/* Acciones (botones) */
+.create-product-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.create-product-button {
+  background: linear-gradient(135deg, var(--wallapop-primary), var(--wallapop-primary-dark));
+  color: var(--wallapop-white);
+  border: none;
+  padding: 16px 0;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(19, 193, 172, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 140px;
+}
+
+.create-product-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.create-product-button:hover:not(:disabled) {
+  background: var(--wallapop-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(19, 193, 172, 0.3);
+}
+
+.create-product-cancel {
+  background: linear-gradient(135deg, var(--wallapop-secondary), #ff8c42);
+}
+
+.create-product-cancel:hover:not(:disabled) {
+  background: #ff6b35;
+}
+
+/* Mensajes de error */
+.create-product-error {
+  color: var(--wallapop-danger);
+  font-size: 14px;
+  margin-top: -12px;
+  margin-bottom: 8px;
+}
+
+/* Indicador de carga */
+.create-product-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--wallapop-primary-dark);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.create-product-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--wallapop-primary-light);
+  border-top: 3px solid var(--wallapop-primary-dark);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .create-product-container {
+    padding: 20px 8px;
+  }
+  .create-product-title {
+    font-size: 22px;
+  }
+  .create-product-section-title {
+    font-size: 16px;
+  }
+  .create-product-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .create-product-button {
+    min-width: 100px;
+    padding: 12px 0;
+    font-size: 15px;
+  }
+  .create-product-image-preview {
+    width: 60px;
+    height: 60px;
+  }
+}

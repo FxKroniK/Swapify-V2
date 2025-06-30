@@ -1,0 +1,113 @@
+package com.example.demo.entities;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Data
+public class Conversation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Integer getProposalCreditsOffered() {
+        return proposalCreditsOffered;
+    }
+
+    public void setProposalCreditsOffered(Integer proposalCreditsOffered) {
+        this.proposalCreditsOffered = proposalCreditsOffered;
+    }
+
+    public String getProposalProductIds() {
+        return proposalProductIds;
+    }
+
+    public void setProposalProductIds(String proposalProductIds) {
+        this.proposalProductIds = proposalProductIds;
+    }
+
+    public ConversationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ConversationStatus status) {
+        this.status = status;
+    }
+
+    public UUID getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(UUID sellerId) {
+        this.sellerId = sellerId;
+    }
+
+    public UUID getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(UUID buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    @Column(name = "product_id")
+    private String productId; // Cambiado de UUID a String
+
+    @Column(name = "buyer_id")
+    private UUID buyerId;
+
+    @Column(name = "seller_id")
+    private UUID sellerId;
+
+    @Enumerated(EnumType.STRING)
+    private ConversationStatus status;
+
+    @Column(columnDefinition = "TEXT")
+    private String proposalProductIds;
+
+    private Integer proposalCreditsOffered;
+
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
+    private List<Message> messages = new ArrayList<>();
+
+    // Getters y setters generados por Lombok (@Data), no necesitas escribirlos manualmente
+}

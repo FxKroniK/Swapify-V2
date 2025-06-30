@@ -1,0 +1,16 @@
+package com.example.demo.dtos;
+
+import java.util.List;
+import java.util.UUID;
+
+public record ConversationDto(
+        Long id,                    // ID de la conversación
+        String productId,             // ID del producto en negociación
+        UUID buyerId,               // ID del comprador
+        UUID sellerId,              // ID del vendedor
+        List<MessageDto> messages,  // Lista de mensajes en la conversación
+        String status,              // Estado de la conversación (ACTIVE, CLOSED, PROPOSAL_SENT)
+        String proposalProductIds,  // Lista de IDs de productos ofrecidos en la propuesta (como JSON string)
+        Integer proposalCreditsOffered, // Créditos ofrecidos en la propuesta
+        String createdAt            // Fecha de creación
+) {}

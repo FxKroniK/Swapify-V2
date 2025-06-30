@@ -1,0 +1,89 @@
+package com.example.demo.dtos;
+
+import java.util.Map;
+
+public class ProductDto {
+    private String id;
+    private String ownerEmail;  // Nuevo campo
+    private String title;
+    private String description;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getOwnerEmail() {
+        return ownerEmail;
+    }
+
+    private String category;
+    private String status;
+    private Map<String, Object> attributes;
+    private double price;
+    private String createdAt;
+
+}
