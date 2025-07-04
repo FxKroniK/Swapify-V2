@@ -1,0 +1,27 @@
+<!-- src/app/components/reviews/reviews.component.html -->
+<div class="reviews-container">
+  <h2 class="text-xl font-semibold text-gray-800 mb-4">Reseñas</h2>
+  <div class="mb-6">
+    <div class="flex items-center mb-2">
+      <span class="text-lg font-medium mr-2">Puntuación promedio: {{ averageRating | number:'1.2-2' }}</span>
+      <span class="flex">
+        <i *ngFor="let star of getStars(averageRating)" [ngClass]="star" class="text-yellow-500"></i>
+      </span>
+    </div>
+    <p class="text-sm text-gray-600">Reseñas positivas: {{ positiveCount }} | Negativas: {{ negativeCount }}</p>
+  </div>
+  <div *ngIf="isLoading" class="text-center text-gray-600">Cargando reseñas...</div>
+  <div *ngIf="!isLoading && reviews.length === 0" class="text-center text-gray-600">No hay reseñas disponibles.</div>
+  <div *ngIf="!isLoading && reviews.length > 0" class="reviews-list">
+    <div *ngFor="let review of reviews" class="review-card p-4 mb-4 bg-white rounded-lg shadow-sm border border-gray-200">
+      <div class="flex items-center mb-2">
+        <span class="flex mr-2">
+          <i *ngFor="let star of getStars(review.rating)" [ngClass]="star" class="text-yellow-500"></i>
+        </span>
+        <span class="text-sm text-gray-500">{{ review.createdAt | date:'short' }}</span>
+      </div>
+      <p class="text-gray-700">{{ review.comment }}</p>
+      <p class="text-sm text-gray-500 mt-1">Producto ID: {{ review.productId }}</p>
+    </div>
+  </div>
+</div>
