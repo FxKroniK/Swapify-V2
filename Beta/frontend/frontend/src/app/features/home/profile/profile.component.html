@@ -1,0 +1,423 @@
+<app-navbar></app-navbar>
+<main>
+  
+  <div class="container">
+    <!-- Encabezado del perfil -->
+    <div class="bg-white rounded-lg shadow-sm mb-6 overflow-hidden">
+      <!-- Portada -->
+      <div class="h-24 bg-[var(--wallapop-primary-light)] relative"></div>
+      <!-- Información del perfil -->
+      <div class="px-6 pb-6">
+        <div class="flex flex-wrap items-end">
+          <!-- Avatar -->
+          <div class="relative -mt-16 mr-6">
+            <img [src]="profileImageUrl" class="w-32 h-32 rounded-full border-4 border-white" alt="Foto de perfil">
+            <button class="absolute bottom-0 right-0 bg-[var(--wallapop-primary)] text-white p-1 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" (click)="enableEditing()" class="h-5 w-5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+          </div>
+          <!-- Nombre e info -->
+          <div class="py-4 flex-grow">
+            <div class="flex flex-wrap items-center justify-between">
+              <div class="flex items-center">
+                <h3 class="text-2xl font-bold m-1">{{nickname}}</h3>
+                <button class="text-[var(--wallapop-primary)] hover:text-[var(--wallapop-primary-dark)]"
+                  (click)="toggleEditUsername()">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                </button>
+                <div *ngIf="isEditingUsername">
+                  <input type="text" [(ngModel)]="nickname"
+                    class="mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--wallapop-primary)] focus:border-[var(--wallapop-primary)]"
+                    placeholder="Nuevo nombre de usuario">
+                  <button (click)="updateUsername()"
+                    class="mt-2 bg-[var(--wallapop-primary)] text-white px-4 py-2 rounded-md">Guardar</button>
+                </div>
+              </div>
+              <div class="flex mt-2 md:mt-0">
+                <div class="relative mr-2">
+                  <button class="flex items-center px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                    (click)="openReviewModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Columna izquierda -->
+      <div class="lg:col-span-4">
+        <!-- Sobre mí -->
+        <div class="bg-white rounded-lg shadow-sm mb-6 overflow-hidden">
+          <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h5 class="text-lg font-semibold">Sobre mí</h5>
+              <button class="text-[var(--wallapop-primary)] hover:text-[var(--wallapop-primary-dark)]">
+                <svg xmlns="http://www.w3.org/2000/svg" (click)="enableEditingMe()" class="h-5 w-5" fill="none"
+                  viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+            </div>
+            <p class="text-gray-700 mb-4">{{this.aboutMe}}</p>
+
+            <hr class="my-4">
+
+            <!-- Detalles de contacto -->
+            <div class="mb-4">
+              <div class="flex items-center mb-3">
+                <button (click)="updateLocation()">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--wallapop-primary)] mr-2"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </button>
+                <span class="text-gray-700">{{ municipio || 'Ubicación no disponible' }} , {{pais}}</span>
+              </div>
+              <div class="flex items-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--wallapop-primary)] mr-2" fill="none"
+                  viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <span class="text-gray-700">Vendedor verificado</span>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Estadísticas de vendedor -->
+            <h6 class="font-medium mb-3">Estadísticas de vendedor</h6>
+            <div class="grid grid-cols-3 gap-3 mb-4">
+              <div class="border rounded-md p-2 text-center">
+                <h5 class="text-lg font-semibold mb-0">98%</h5>
+                <span class="text-xs text-gray-500">Respuesta</span>
+              </div>
+              <div class="border rounded-md p-2 text-center">
+                <h5 class="text-lg font-semibold mb-0">24h</h5>
+                <span class="text-xs text-gray-500">Envío</span>
+              </div>
+              <div class="border rounded-md p-2 text-center">
+                <h5 class="text-lg font-semibold mb-0">156</h5>
+                <span class="text-xs text-gray-500">Ventas</span>
+              </div>
+            </div>
+
+            <!-- Valoraciones -->
+            <div class="flex justify-between items-center mb-2">
+              <h6 class="font-medium mb-0">Valoraciones</h6>
+              <a href="#" class="text-[var(--wallapop-primary)] text-sm hover:underline"
+                 (click)="activeTab = 'resenas'; $event.preventDefault()">Ver todas</a>
+            </div>
+            <div class="mb-2">
+              <div *ngFor="let star of [5, 4, 3, 2, 1]; let i = index" class="flex items-center mb-1">
+                <span class="w-8 text-sm">{{ star }} <svg xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 inline text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg></span>
+                <div class="flex-grow h-1.5 mx-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div [ngClass]="{'bg-[var(--wallapop-primary)]': star >= 3, 'bg-yellow-500': star === 3, 'bg-red-500': star <= 2}"
+                       class="h-full"
+                       [style.width]="getStarPercentage(star) + '%'"></div>
+                </div>
+                <span class="text-sm">{{ getStarPercentage(star) | number:'1.0-0' }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Categorías -->
+        <div class="bg-white rounded-lg shadow-sm mb-6 overflow-hidden">
+          <div class="p-6">
+            <h5 class="text-lg font-semibold mb-3">Categorías</h5>
+            <div class="flex flex-wrap gap-2">
+              <a href="#"
+                class="px-3 py-1 bg-[var(--wallapop-primary-light)] text-[var(--wallapop-primary)] rounded-full text-sm hover:bg-[var(--wallapop-primary)] hover:text-white">Electrónica</a>
+              <a href="#"
+                class="px-3 py-1 bg-[var(--wallapop-primary-light)] text-[var(--wallapop-primary)] rounded-full text-sm hover:bg-[var(--wallapop-primary)] hover:text-white">Fotografía</a>
+              <a href="#"
+                class="px-3 py-1 bg-[var(--wallapop-primary-light)] text-[var(--wallapop-primary)] rounded-full text-sm hover:bg-[var(--wallapop-primary)] hover:text-white">Smartphones</a>
+              <a href="#"
+                class="px-3 py-1 bg-[var(--wallapop-primary-light)] text-[var(--wallapop-primary)] rounded-full text-sm hover:bg-[var(--wallapop-primary)] hover:text-white">Accesorios</a>
+              <a href="#"
+                class="px-3 py-1 bg-[var(--wallapop-primary-light)] text-[var(--wallapop-primary)] rounded-full text-sm hover:bg-[var(--wallapop-primary)] hover:text-white">Ordenadores</a>
+              <a href="#"
+                class="px-3 py-1 bg-[var(--wallapop-primary-light)] text-[var(--wallapop-primary)] rounded-full text-sm hover:bg-[var(--wallapop-primary)] hover:text-white">Audio</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="lg:col-span-8">
+        <!-- Añadir producto -->
+        <div *ngIf="isEditing">
+          <label for="profileImageUrl">Añada un archivo de imagen</label>
+          <input type="file" id="profileImageUrl" (change)="onFileSelected($event)"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--wallapop-primary)] focus:border-[var(--wallapop-primary)]">
+          <button (click)="saveProfile()"
+            class="bg-[var(--wallapop-primary)] text-white px-4 py-2 rounded-md">Guardar</button>
+          <div *ngIf="profileImageUrl">
+            <p>Vista previa:</p>
+            <img [src]="profileImageUrl" alt="Vista previa de la imagen" style="max-width: 200px; max-height: 200px;" />
+          </div>
+        </div>
+        <div *ngIf="isEditingMe">
+          <label for="aboutMeText">Sobre mí:</label>
+          <input id="aboutMeText" [(ngModel)]="aboutMe"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--wallapop-primary)] focus:border-[var(--wallapop-primary)]">
+          <button (click)="saveProfileAbout()"
+            class="bg-[var(--wallapop-primary)] text-white px-4 py-2 rounded-md">Guardar</button>
+        </div>
+
+        <!-- Pestañas de contenido -->
+        <div class="border-b border-gray-200 mb-6">
+          <nav class="flex">
+            <a href="#" class="px-4 py-3 text-decoration-none font-medium"
+              [class.text-[var(--wallapop-primary)]]="activeTab === 'productos'"
+              [class.border-b-2]="activeTab === 'productos'"
+              [class.border-[var(--wallapop-primary)]]="activeTab === 'productos'"
+              [class.text-gray-500]="activeTab !== 'productos'"
+              (click)="activeTab = 'productos'; $event.preventDefault()">
+              Productos a la venta ({{products.length}})
+            </a>
+            <a href="#" class="px-4 py-3 text-decoration-none font-medium"
+              [class.text-[var(--wallapop-primary)]]="activeTab === 'conversaciones'"
+              [class.border-b-2]="activeTab === 'conversaciones'"
+              [class.border-[var(--wallapop-primary)]]="activeTab === 'conversaciones'"
+              [class.text-gray-500]="activeTab !== 'conversaciones'"
+              (click)="activeTab = 'conversaciones'; $event.preventDefault()">
+              Conversaciones ({{conversations.length}})
+            </a>
+            <a href="#" class="px-4 py-3 text-decoration-none font-medium"
+              [class.text-[var(--wallapop-primary)]]="activeTab === 'resenas'"
+              [class.border-b-2]="activeTab === 'resenas'"
+              [class.border-[var(--wallapop-primary)]]="activeTab === 'resenas'"
+              [class.text-gray-500]="activeTab !== 'resenas'"
+              (click)="activeTab = 'resenas'; $event.preventDefault()">
+              Reseñas
+            </a>
+          </nav>
+        </div>
+
+        <!-- Sección de productos -->
+        <div *ngIf="activeTab === 'productos'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div *ngFor="let product of paginatedProducts" class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div class="relative">
+              <img [src]="product.imageUrl" class="w-full h-48 object-cover" alt="Producto">
+            </div>
+            <div class="p-4">
+              <h5 class="text-lg font-medium">{{product.title}}</h5>
+              <p class="text-gray-600 text-sm">{{product.description}}</p>
+              <span class="font-bold text-[var(--wallapop-primary)]">{{product.price}}</span>
+            </div>
+            <div class="px-4 py-3 bg-gray-50 border-t border-gray-100 flex justify-between">
+              <button class="flex items-center text-[var(--wallapop-primary)] hover:text-[var(--wallapop-primary-dark)]"
+                (click)="irAEditar(product.id)">
+                <i class="fas fa-edit mr-1"></i> Editar
+              </button>
+              <button class="flex items-center text-[#e53935] hover:text-[#e53935]"
+                (click)="eliminarProducto(product.id, product.imageId)">
+                <i class="fas fa-trash mr-1"></i> Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de conversaciones -->
+        <div *ngIf="activeTab === 'conversaciones'" class="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h5 class="text-lg font-semibold mb-4">Conversaciones activas</h5>
+          <div *ngFor="let conversation of conversations" class="border-b border-gray-200 py-3">
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="font-medium">Conversación con: {{ otherUserNames[conversation.id] || 'Cargando...' }}</p>
+                <p class="text-sm text-gray-600">Estado: {{ conversation.status }}</p>
+                <p class="text-sm text-gray-600">Creado: {{ conversation.createdAt | date:'short' }}</p>
+              </div>
+              <div class="flex items-center space-x-4">
+                <button
+                  class="m-2 flex items-center text-[var(--wallapop-primary)] hover:text-[var(--wallapop-primary-dark)]"
+                  (click)="goToChat(conversation.id)">
+                  <i class="fas fa-comments mr-1"></i> Ir al chat
+                </button>
+                <button class="flex items-center text-[#e53935] hover:text-[#e53935]"
+                  (click)="deleteConversation(conversation.id)">
+                  <i class="fas fa-trash mr-1"></i> Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de reseñas -->
+        <div *ngIf="activeTab === 'resenas'">
+          <app-reviews *ngIf="user && user.id" [userId]="user.id"></app-reviews>
+        </div>
+
+        <!-- Paginación -->
+        <div class="mt-6 flex justify-center">
+          <nav class="inline-flex rounded-md shadow">
+            <!-- Botón Anterior -->
+            <button
+              class="py-2 px-4 bg-white border border-gray-300 rounded-l-md text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+              [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">
+              Anterior
+            </button>
+            <!-- Botones de páginas -->
+            <button *ngFor="let page of totalPages; let i = index" class="py-2 px-4"
+              [class.bg-[var(--wallapop-primary)]]="currentPage === page" [class.text-white]="currentPage === page"
+              [class.bg-white]="currentPage !== page" [class.text-gray-500]="currentPage !== page" [class.border]="true"
+              [class.border-[var(--wallapop-primary)]]="currentPage === page"
+              [class.border-gray-300]="currentPage !== page" (click)="currentPage = page">
+              {{ page }}
+            </button>
+            <!-- Botón Siguiente -->
+            <button
+              class="py-2 px-4 bg-white border border-gray-300 rounded-r-md text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+              [disabled]="currentPage === totalPages.length" (click)="currentPage = currentPage + 1">
+              Siguiente
+            </button>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal de reseñas -->
+<div *ngIf="showReviewModal" class="review-modal-overlay">
+  <div class="review-modal">
+    <!-- Encabezado del modal -->
+    <div class="review-modal-header">
+      <h3 class="review-modal-title">Productos comprados para reseñar</h3>
+      <button (click)="toggleReviewModal()" class="review-modal-close">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <!-- Contenido del modal -->
+    <div class="review-modal-content">
+      <!-- Mostrar mensaje si no hay productos para reseñar -->
+      <div *ngIf="reviewableProducts.length === 0" class="review-empty-state">
+        No tienes productos pendientes de reseñar.
+      </div>
+      <!-- Lista de productos para reseñar -->
+      <div *ngFor="let product of reviewableProducts" class="review-product-item">
+        <div class="review-product-container">
+          <img [src]="product.imageUrl" alt="Imagen del producto" class="review-product-image">
+          <div class="review-product-details">
+            <h4 class="review-product-name">{{ product.title }}</h4>
+            <p class="review-product-description">{{ product.description }}</p>
+            <div class="review-product-actions">
+              <button *ngIf="!product.reviewed" (click)="openReviewForm(product)" class="review-button">
+                Escribir reseña
+              </button>
+              <span *ngIf="product.reviewed" class="review-completed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="review-check-icon" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Reseña enviada
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-create-review *ngIf="showReviewForm && selectedProductForReview"
+      [inputReviewedUserId]="selectedProductForReview.reviewedUserId"
+      [inputProductId]="selectedProductForReview.productId" (reviewSubmitted)="closeReviewForm()"
+      (reviewCancelled)="closeReviewForm()"></app-create-review>
+    <!-- Pie del modal -->
+    <div class="review-modal-footer">
+      <button (click)="toggleReviewModal()" class="review-close-button">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Columna 1 -->
+      <div class="footer-column">
+        <h3 class="footer-title">Swapify</h3>
+        <ul class="footer-links">
+          <li><a href="#" class="footer-link">Quiénes somos</a></li>
+          <li><a href="#" class="footer-link">Cómo funciona</a></li>
+          <li><a href="#" class="footer-link">Seguridad</a></li>
+        </ul>
+      </div>
+      <!-- Columna 2 -->
+      <div class="footer-column">
+        <h3 class="footer-title">Soporte</h3>
+        <ul class="footer-links">
+          <li><a href="#" class="footer-link">Centro de ayuda</a></li>
+          <li><a href="#" class="footer-link">Contacto</a></li>
+          <li><a href="#" class="footer-link">Reglas de publicación</a></li>
+        </ul>
+      </div>
+      <!-- Columna 3 -->
+      <div class="footer-column">
+        <h3 class="footer-title">Legal</h3>
+        <ul class="footer-links">
+          <li><a href="#" class="footer-link">Condiciones de uso</a></li>
+          <li><a href="#" class="footer-link">Política de privacidad</a></li>
+          <li><a href="#" class="footer-link">Cookies</a></li>
+        </ul>
+      </div>
+      <!-- Columna 4 -->
+      <div class="footer-column">
+        <h3 class="footer-title">Síguenos</h3>
+        <div class="social-links">
+          <a href="#" class="social-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="copyright">© 2025 Swapify. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,191 @@
+<nav class="flex items-center justify-between px-4 py-2 border-b border-gray-200">
+    <!-- Logo -->
+    <a href="#" class="text-2xl font-bold !text-green-700">Swapify</a>
+  
+    <!-- Búsqueda -->
+    <div class="flex flex-1 mx-4">
+      <div class="relative flex items-center w-full max-w-3xl">
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Categorías
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Mujer</a></li>
+            <li><a class="dropdown-item" href="#">Hombre</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Tecnología</a></li>
+          </ul>
+        </div>
+        <input
+          type="text"
+          placeholder="Busca artículos"
+          class="w-full m-2 px-3 py-2 bg-gray-100 rounded-r-md focus:outline-none">
+      </div>
+    </div>
+  
+    <!-- Acciones -->
+    <div class="flex items-center gap-3">
+      <button *ngIf="!user" class="text-teal-600" (click)="irARegistro()">Regístrate</button>
+      <button *ngIf="!user" class="text-teal-600" (click)="irALogin()">Iniciar Sesión</button>
+      <button class="px-4 py-2 text-white bg-teal-600 rounded-md" (click)="irAContacta()">Contáctanos</button>
+      <button class="p-2 text-gray-500 rounded-full hover:bg-gray-100">
+        <i class="fas fa-question"></i>
+      </button>
+      <div *ngIf="user" class="flex items-center space-x-4">
+        <span class="text-lg font-semibold"><a (click)="irAProfile()"> <!--{{ user.username }}--></a></span>
+        <span class="bg-green-600 px-3 py-1 rounded">Créditos: <!--{{ user.credits }}--></span>
+        <button (click)="logout()" class="bg-red-500 px-4 py-2 rounded">Cerrar sesión</button>
+      </div>
+      <div class="flex items-center ml-2">
+        ES <i class="ml-1 fas fa-chevron-down text-xs"></i>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+
+<main class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="bg-emerald-500 p-6">
+        <h2 class="text-2xl font-bold text-white">Contáctanos</h2>
+        <p class="text-emerald-50">Completa el formulario y nos pondremos en contacto contigo pronto.</p>
+      </div>
+      
+      <form class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label for="name" class="text-sm font-medium text-gray-700">
+              Nombre completo
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Tu nombre"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+          
+          <div class="space-y-2">
+            <label for="email" class="text-sm font-medium text-gray-700">
+              Correo electrónico
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="tu@email.com"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+        </div>
+        
+        <div class="space-y-2">
+          <label for="subject" class="text-sm font-medium text-gray-700">
+            Asunto
+          </label>
+          <select
+            id="subject"
+            name="subject"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          >
+            <option value="" selected disabled>Selecciona un asunto</option>
+            <option value="soporte">Soporte técnico</option>
+            <option value="ventas">Ventas</option>
+            <option value="facturacion">Facturación</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        
+        <div class="space-y-2">
+          <label for="message" class="text-sm font-medium text-gray-700">
+            Mensaje
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            placeholder="Escribe tu mensaje aquí..."
+            rows="5"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          ></textarea>
+        </div>
+        
+        <div class="flex items-center">
+          <input
+            id="privacy"
+            name="privacy"
+            type="checkbox"
+            required
+            class="h-4 w-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded"
+          />
+          <label for="privacy" class="ml-2 block text-sm text-gray-700">
+            Acepto la política de privacidad y el tratamiento de mis datos
+          </label>
+        </div>
+        
+        <div class="flex justify-end">
+          <button
+            type="submit"
+            class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-2 px-6 rounded-md transition-colors"
+          >
+            Enviar mensaje
+          </button>
+        </div>
+      </form>
+    </div>
+    </main>
+<br>
+    <footer class="bg-green-900 text-white py-8">
+        <div class="container mx-auto px-4">
+          <!-- Logo y enlaces principales -->
+          <div class="row mb-8">
+            <!-- Logo -->
+            <div class="col-12 mb-6">
+              <h2 class="text-2xl font-bold">Swapify</h2>
+            </div>
+            
+            
+            <!-- Formulario de suscripción -->
+            <div class="col-12 col-md-6 mt-6 mt-md-0">
+              <p class="mb-3">Obtén las últimas novedades de nuestra plataforma</p>
+              
+              <div class="flex mb-3">
+                <input 
+                  type="email" 
+                  placeholder="Your email here" 
+                  class="p-2 w-full bg-green-800 border border-green-700 text-white"
+                >
+                <button class="bg-white text-green-900 px-4 whitespace-nowrap">
+                  Subscribe
+                </button>
+              </div>
+              
+              <div class="flex items-start gap-2">
+                <input type="checkbox" class="mt-1">
+                <p class="text-sm">Acepto las Normas y Términos de Condiciones</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Línea divisoria -->
+          <hr class="border-green-700 mb-4">
+          
+          <!-- Enlaces legales -->
+          <div class="text-sm flex flex-wrap gap-x-4 gap-y-2 mb-2">
+            <a href="#" class="hover:underline">Términos de la página web</a>
+            <span class="hidden md:inline">|</span>
+            <a href="#" class="hover:underline">Política de privacidad</a>
+          </div>
+          
+          <!-- Copyright -->
+          <div class="text-sm">
+            ©2025 Swapify, LLC. Todos los derechos reservados.
+          </div>
+        </div>
+      </footer>

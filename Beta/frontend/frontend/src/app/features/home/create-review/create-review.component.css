@@ -1,0 +1,121 @@
+.review-container {
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.review-header .review-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.rating-container {
+  margin-bottom: 1rem;
+}
+
+.rating-label {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.stars-container {
+  display: inline-flex;
+}
+
+.star {
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.star-filled {
+  color: #ffd700;
+}
+
+.star-empty {
+  color: #ccc;
+}
+
+.comment-container {
+  margin-bottom: 1rem;
+}
+
+.comment-label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.comment-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.review-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancel-button, .submit-button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background: var(--wallapop-gray);
+  color: var(--wallapop-text);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.2s;
+}
+.cancel-button:hover,
+.cancel-button:focus {
+  background: var(--wallapop-border);
+  color: var(--wallapop-primary);
+  transform: translateY(-1px);
+}
+
+.submit-button {
+  background: linear-gradient(135deg, var(--wallapop-primary), var(--wallapop-primary-dark));
+  color: var(--wallapop-white);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(19, 193, 172, 0.18);
+  transition: all 0.2s;
+  outline: none;
+  position: relative;
+  z-index: 1;
+}
+.submit-button:hover,
+.submit-button:focus {
+  background: linear-gradient(135deg, var(--wallapop-primary-dark), var(--wallapop-primary));
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 25px rgba(19, 193, 172, 0.25);
+  color: var(--wallapop-white);
+}
+
+.submit-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  color: #fff;
+}
