@@ -34,7 +34,8 @@ This helps ensure that user-uploaded images meet platform standards.
 
 ## 🌐 Frontend Overview
 
-The frontend is built with **Angular**, structured as a single-page application.
+The frontend is developed using **Angular** and includes **multiple pages routed through Angular Router**
+
 
 ---
 
