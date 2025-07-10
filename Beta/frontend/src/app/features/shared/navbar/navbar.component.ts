@@ -50,6 +50,20 @@ export class NavbarComponent implements OnInit {
       this.user = user;
       if (user) {
         this.loadFavoriteCount();
+        // Cargar el perfil del usuario para obtener la foto de perfil actualizada
+        const token = localStorage.getItem('token');
+        if (token) {
+          this.userService.getUserProfile(token).subscribe({
+            next: (profile) => {
+              if (this.user) {
+                this.user = { ...this.user, profilePictureUrl: profile.profilePictureUrl };
+              }
+            },
+            error: (err) => {
+              console.error('Error al cargar el perfil del usuario en navbar:', err);
+            }
+          });
+        }
       } else {
         this.favoriteCount = 0;
       }
