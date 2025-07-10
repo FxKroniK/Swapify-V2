@@ -82,9 +82,10 @@
               <!-- Mensaje de sistema (transacción) -->
               <div *ngIf="message.isSystem; else regularMessage" class="system-message mx-auto">
                 <div class="system-message-content">
+                  <p class="mb-2">{{ formatSystemMessageText(message.text) }}</p> <!-- Mostrar el texto formateado -->
                   <ng-container *ngIf="transactions[getTransactionId(message.text)] as transaction">
                     <!-- Mostrar botones solo si está pendiente y el usuario NO ha aceptado -->
-                    <div *ngIf="transaction.status === 'PENDING' && !hasAccepted(transaction.id)" class="btn-group mt-2">
+                    <div *ngIf="transaction.status === 'PENDING' && !hasAccepted(transaction.id)" class="button-container">
                       <button
                         class="btn btn-primary btn-sm me-1"
                         [disabled]="isAccepting[transaction.id]"

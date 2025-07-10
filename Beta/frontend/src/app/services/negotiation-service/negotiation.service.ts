@@ -115,15 +115,11 @@ export class NegotiationService {
   }
 
   confirmTransaction(conversationId: number, transactionId: number, accept: boolean): Observable<Transaction> {
+    const body = { status: accept ? 'ACCEPTED' : 'REJECTED' };
     return this.http
-      .post<Transaction>(
-        `${this.apiUrl}/${conversationId}/transactions/${transactionId}/confirm`,
-        null, // No es necesario enviar el conversationId en el cuerpo
-        {
-          headers: this.getHeaders(),
-          params: { accept: accept.toString() },
-        }
-      )
+      .put<Transaction>(`http://localhost:8084/transactions/${transactionId}/status`, body, {
+        headers: this.getHeaders(),
+      })
       .pipe(
         catchError((err) => {
           console.error('Error confirming transaction:', err);

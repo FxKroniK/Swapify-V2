@@ -15,4 +15,9 @@ public interface ChatClient {
     ResponseEntity<Void> notifyTransactionUpdate(
             @PathVariable("conversationId") Long conversationId,
             @RequestBody Map<String, Object> message);
+
+    @PostMapping("/api/negotiations/notify/user/{userId}")
+    ResponseEntity<String> sendNotificationToUser(
+            @PathVariable("userId") Long userId,
+            @RequestBody Map<String, Object> notification);
 }

@@ -346,46 +346,14 @@ public class NegotiationServiceImpl implements NegotiationService {
 
         UpdateTransactionStatusDto statusDto = new UpdateTransactionStatusDto();
         statusDto.setStatus(accept ? "ACCEPTED" : "REJECTED");
+        statusDto.setConversationId(conversationId); // Importante: añadir esto
 
         TransactionDto updatedTransaction = transactionClient.updateTransactionStatus(transactionId, statusDto, authToken);
 
-        // Solo enviar mensaje si ambos han aceptado y el estado es COMPLETED
-        if ("COMPLETED".equalsIgnoreCase(updatedTransaction.getStatus())
-                && updatedTransaction.isBuyerAccepted()
-                && updatedTransaction.isSellerAccepted()) {
-            boolean alreadyExists = conversation.getMessages().stream()
-                    .anyMatch(m -> m.getType() == MessageType.SYSTEM && m.getContent().contains("ID: " + transactionId));
-            if (!alreadyExists) {
-                Message systemMessage = new Message();
-                systemMessage.setId(idGeneratorService.generateSequence("message_sequence"));
-                systemMessage.setContent("Transacción completada ID: " + transactionId);
-                systemMessage.setTimestamp(LocalDateTime.now());
-                systemMessage.setType(MessageType.SYSTEM);
-                conversation.getMessages().add(systemMessage);
-                conversationRepository.save(conversation);
+        // ✅ ELIMINAR TODA LA LÓGICA DE CREACIÓN DE MENSAJES DEL SISTEMA
+        // El backend ya se encarga de enviar el mensaje apropiado vía notifyTransactionUpdate
 
-                MessageDto systemMessageDto = mapToMessageDto(systemMessage, conversationId);
-                System.out.println("Enviando mensaje al canal /topic/conversations/" + conversationId + ": " + systemMessageDto.getContent());
-                messagingTemplate.convertAndSend("/topic/conversations/" + conversationId, systemMessageDto);
-            }
-        } else if ("REJECTED".equalsIgnoreCase(updatedTransaction.getStatus())) {
-            // Lógica para mensaje de rechazo (opcional)
-            boolean alreadyExists = conversation.getMessages().stream()
-                    .anyMatch(m -> m.getType() == MessageType.SYSTEM && m.getContent().contains("ID: " + transactionId));
-            if (!alreadyExists) {
-                Message systemMessage = new Message();
-                systemMessage.setId(idGeneratorService.generateSequence("message_sequence"));
-                systemMessage.setContent("Transacción rechazada ID: " + transactionId);
-                systemMessage.setTimestamp(LocalDateTime.now());
-                systemMessage.setType(MessageType.SYSTEM);
-                conversation.getMessages().add(systemMessage);
-                conversationRepository.save(conversation);
-
-                MessageDto systemMessageDto = mapToMessageDto(systemMessage, conversationId);
-                System.out.println("Enviando mensaje al canal /topic/conversations/" + conversationId + ": " + systemMessageDto.getContent());
-                messagingTemplate.convertAndSend("/topic/conversations/" + conversationId, systemMessageDto);
-            }
-        }
+        System.out.println("[Chat] Transacción " + transactionId + " actualizada a estado: " + updatedTransaction.getStatus());
 
         return updatedTransaction;
     }
@@ -397,14 +365,72 @@ public class NegotiationServiceImpl implements NegotiationService {
                 .orElseThrow(() -> new NoSuchElementException("Conversación no encontrada"));
 
         String content = (String) message.get("content");
-        if (content != null && (content.contains("Transacción completada") || content.contains("Transacción rechazada"))) {
+        String type = (String) message.get("type");
+
+        // **NUEVA LÓGICA** - Manejar confirmaciones de mensaje del sistema
+        if ("SYSTEM_MESSAGE_CONFIRMATION".equals(type) && "SYSTEM_MESSAGE_SENT".equals(content)) {
+            Long transactionId = message.get("transactionId") != null ?
+                    Long.valueOf(message.get("transactionId").toString()) : null;
+            Long buyerId = message.get("buyerId") != null ?
+                    Long.valueOf(message.get("buyerId").toString()) : null;
+            Long sellerId = message.get("sellerId") != null ?
+                    Long.valueOf(message.get("sellerId").toString()) : null;
+
+            if (transactionId != null && buyerId != null && sellerId != null) {
+                // Crear notificación de confirmación para el comprador
+                Map<String, Object> buyerNotification = Map.of(
+                        "type", "SYSTEM_MESSAGE_SENT",
+                        "message", "Mensaje del sistema enviado al chat",
+                        "transactionId", transactionId,
+                        "conversationId", conversationId,
+                        "timestamp", LocalDateTime.now().toString()
+                );
+
+                // Crear notificación de confirmación para el vendedor
+                Map<String, Object> sellerNotification = Map.of(
+                        "type", "SYSTEM_MESSAGE_SENT",
+                        "message", "Mensaje del sistema enviado al chat",
+                        "transactionId", transactionId,
+                        "conversationId", conversationId,
+                        "timestamp", LocalDateTime.now().toString()
+                );
+
+                // Enviar notificaciones WebSocket a ambos usuarios
+                System.out.println("Enviando confirmación SYSTEM_MESSAGE_SENT a usuario " + buyerId);
+                messagingTemplate.convertAndSendToUser(
+                        buyerId.toString(),
+                        "/queue/notifications",
+                        buyerNotification
+                );
+
+                System.out.println("Enviando confirmación SYSTEM_MESSAGE_SENT a usuario " + sellerId);
+                messagingTemplate.convertAndSendToUser(
+                        sellerId.toString(),
+                        "/queue/notifications",
+                        sellerNotification
+                );
+
+                System.out.println("[Chat] Confirmaciones SYSTEM_MESSAGE_SENT enviadas a usuarios " + buyerId + " y " + sellerId);
+            }
+            return; // No crear mensaje en la conversación para confirmaciones
+        }
+
+        // ✅ LÓGICA ACTUALIZADA - Solo aceptar mensajes amigables del backend
+        if (content != null &&
+                (content.equals("¡Transacción completada exitosamente!") ||
+                        content.equals("Esperando confirmación de ambas partes...") ||
+                        content.contains("Estado de transacción actualizado"))) {
+
+            // Verificar que no existe ya un mensaje idéntico
             boolean alreadyExists = conversation.getMessages().stream()
                     .anyMatch(m -> m.getType() == MessageType.SYSTEM && content.equals(m.getContent()));
+
             if (alreadyExists) {
-                System.out.println("Mensaje de sistema ya existe, no se envía duplicado: " + content);
+                System.out.println("[Chat] Mensaje de sistema ya existe, ignorando: " + content);
                 return;
             }
 
+            // Crear el mensaje del sistema
             Message systemMessage = new Message();
             systemMessage.setId(idGeneratorService.generateSequence("message_sequence"));
             systemMessage.setSenderId(0L);
@@ -416,12 +442,12 @@ public class NegotiationServiceImpl implements NegotiationService {
             conversationRepository.save(conversation);
 
             MessageDto systemMessageDto = mapToMessageDto(systemMessage, conversationId);
-            System.out.println("Enviando mensaje al canal /topic/conversations/" + conversationId + ": " + systemMessageDto.getContent());
+            System.out.println("[Chat] Enviando mensaje al canal /topic/conversations/" + conversationId + ": " + systemMessageDto.getContent());
             messagingTemplate.convertAndSend("/topic/conversations/" + conversationId, systemMessageDto);
 
-            System.out.println("Mensaje WebSocket enviado a /topic/conversations/" + conversationId + ": " + systemMessage.getContent());
+            System.out.println("[Chat] Mensaje WebSocket enviado: " + systemMessage.getContent());
         } else {
-            System.out.println("Mensaje ignorado en notifyTransactionUpdate: " + content);
+            System.out.println("[Chat] Mensaje ignorado en notifyTransactionUpdate: " + content);
         }
     }
 

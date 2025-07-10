@@ -133,7 +133,6 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Transaction not found: " + id));
 
-
         if (transaction.getStatus() == Status.COMPLETED || transaction.getStatus() == Status.REJECTED) {
             System.out.println("Transacción con ID " + id + " ya ha sido procesada con estado: " + transaction.getStatus());
             return mapToDto(transaction);
@@ -214,6 +213,7 @@ public class TransactionServiceImpl implements TransactionService {
                     transaction.setStatus(Status.COMPLETED);
                     transaction.setUpdatedAt(LocalDateTime.now());
                     transactionRepository.save(transaction);
+
                     try {
                         UserDto buyer = userClient.getUserInternal(transaction.getBuyerId());
                         UserDto seller = userClient.getUserInternal(transaction.getSellerId());
@@ -304,13 +304,29 @@ public class TransactionServiceImpl implements TransactionService {
 
             transaction.setUpdatedAt(LocalDateTime.now());
             Transaction updatedTransaction = transactionRepository.save(transaction);
-            System.out.println("Notificando actualización de transacción ID: " + id + " con estado: " + updatedTransaction.getStatus());
-            notificationService.notifyTransactionUpdate(
-                    transaction.getBuyerId(),
-                    transaction.getSellerId(),
-                    id,
-                    updatedTransaction.getStatus().toString()
-            );
+
+            // ✅ CAMBIO PRINCIPAL - Notificar diferente según el estado
+            System.out.println("[DEBUG] Transacción " + id + " - Estado: " + updatedTransaction.getStatus());
+            System.out.println("[DEBUG] Notificando a comprador " + transaction.getBuyerId() + " y vendedor " + transaction.getSellerId());
+
+            if (updatedTransaction.getStatus() == Status.COMPLETED) {
+                // ✅ Para transacciones completadas, notificar a AMBOS usuarios
+                System.out.println("[DEBUG] Enviando notificación de COMPLETADO a AMBOS usuarios");
+                notificationService.notifyTransactionCompletedToBothUsers(
+                        transaction.getBuyerId(),
+                        transaction.getSellerId(),
+                        id,
+                        transaction.getConversationId()
+                );
+            } else {
+                // Para otros estados, usar la lógica existente
+                notificationService.notifyTransactionUpdate(
+                        transaction.getBuyerId(),
+                        transaction.getSellerId(),
+                        id,
+                        updatedTransaction.getStatus().toString()
+                );
+            }
 
             // Notificar al microservicio de chat usando el Feign Client
             Long conversationId = transaction.getConversationId();
@@ -320,19 +336,43 @@ public class TransactionServiceImpl implements TransactionService {
                         ") no coincide con el de la transacción (" + conversationId + ")");
                 throw new IllegalStateException("El conversationId proporcionado no coincide con el de la transacción");
             }
+
             if (conversationId != null) {
                 try {
                     Map<String, Object> message = new HashMap<>();
                     message.put("id", System.currentTimeMillis());
                     message.put("conversationId", conversationId);
                     message.put("senderId", 0);
-                    message.put("content", "Transacción ID: " + id + " ha pasado a estado " + updatedTransaction.getStatus());
+
+                    // ✅ CAMBIO PRINCIPAL - Usar mensajes amigables sin ID
+                    String friendlyMessage;
+                    if (updatedTransaction.getStatus() == Status.COMPLETED) {
+                        friendlyMessage = "¡Transacción completada exitosamente!";
+                    } else if (updatedTransaction.getStatus() == Status.PENDING) {
+                        friendlyMessage = "Esperando confirmación de ambas partes...";
+                    } else {
+                        friendlyMessage = "Estado de transacción actualizado: " + updatedTransaction.getStatus();
+                    }
+                    message.put("content", friendlyMessage);
+
                     message.put("timestamp", LocalDateTime.now().toString());
                     message.put("type", "SYSTEM");
 
                     System.out.println("[Backend] Enviando notificación al microservicio de chat: " + message);
                     ResponseEntity<Void> response = chatClient.notifyTransactionUpdate(conversationId, message);
                     System.out.println("[Backend] Notificación enviada al microservicio de chat: " + response.getStatusCode());
+
+                    // Si el envío al chat fue exitoso, notificar a ambos usuarios que el mensaje del sistema fue enviado
+                    if (response.getStatusCode().is2xxSuccessful()) {
+                        notificationService.notifySystemMessageSent(
+                                transaction.getBuyerId(),
+                                transaction.getSellerId(),
+                                id,
+                                conversationId
+                        );
+                        System.out.println("[Backend] Confirmación de mensaje del sistema enviada a usuarios");
+                    }
+
                 } catch (Exception e) {
                     System.err.println("[Backend] Error al notificar al microservicio de chat: " + e.getMessage());
                 }

@@ -4,9 +4,13 @@ import com.example.demo.dtos.ConversationDto;
 import com.example.demo.dtos.MessageDto;
 import com.example.demo.dtos.TransactionDto;
 import com.example.demo.interfaces.NegotiationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +20,13 @@ import java.util.Map;
 @RequestMapping("/api/negotiations")
 public class NegotiationController {
 
+    private static final Logger log = LoggerFactory.getLogger(NegotiationController.class);
+
     private final NegotiationService negotiationService;
+
+    // ✅ AGREGAR SimpMessagingTemplate para las notificaciones
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public NegotiationController(NegotiationService negotiationService) {
         this.negotiationService = negotiationService;
@@ -112,6 +122,32 @@ public class NegotiationController {
         } catch (Exception e) {
             System.err.println("Error al procesar la notificación: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // ✅ NUEVO ENDPOINT - Para recibir notificaciones del microservicio de transacciones
+    // y enviarlas por WebSocket a usuarios específicos
+    @PostMapping("/notify/user/{userId}")
+    public ResponseEntity<String> sendNotificationToUser(
+            @PathVariable Long userId,
+            @RequestBody Map<String, Object> notification) {
+
+        try {
+            String destination = "/user/" + userId + "/queue/notifications";
+
+            log.info("📡 [Chat-Notification] Enviando notificación WebSocket a usuario {} en destino {}: {}",
+                    userId, destination, notification.get("message"));
+
+            // ✅ ENVIAR POR WEBSOCKET al usuario específico
+            messagingTemplate.convertAndSend(destination, notification);
+
+            log.info("✅ [Chat-Notification] Notificación WebSocket enviada exitosamente a usuario {}", userId);
+
+            return ResponseEntity.ok("Notificación enviada");
+
+        } catch (Exception e) {
+            log.error("❌ [Chat-Notification] Error enviando notificación WebSocket a usuario {}: ", userId, e);
+            return ResponseEntity.internalServerError().body("Error enviando notificación");
         }
     }
 }
